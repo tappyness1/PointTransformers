@@ -1,4 +1,4 @@
-# PointNet
+# PointTransformer
 
 ## What this is about
 Just a simple implementation based on the PointTransformer which was where people looked at PointNet and asked "can we parallelise the operations using Transformers?". Does pretty well but much of the same techniques in PointNet++ can be seen here. 
