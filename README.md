@@ -33,6 +33,25 @@ Make sure you change the directory of your data.
 python -m src.train
 ```
 
+Classification Results:
+
+| Classification Report: |   Loss | Accuracy |         |     |
+|-----------------------:|-------:|---------:|---------|-----|
+|              precision | recall | f1-score | support |     |
+|                      0 |   1.00 |     0.02 | 0.04    | 50  |
+| 1                      | 0.79   | 0.91     | 0.85    | 100 |
+| 2                      | 0.81   | 0.97     | 0.88    | 100 |
+| 3                      | 0.68   | 0.27     | 0.39    | 85  |
+| 4                      | 0.57   | 0.80     | 0.67    | 86  |
+| 5                      | 0.91   | 0.90     | 0.90    | 100 |
+| 6                      | 0.70   | 0.41     | 0.52    | 85  |
+| 7                      | 0.59   | 0.96     | 0.73    | 100 |
+| 8                      | 0.76   | 0.87     | 0.81    | 100 |
+| 9                      | 0.85   | 0.75     | 0.80    | 100 |
+| accuracy               |        |          | 0.73    | 906 |
+| macro avg              | 0.77   | 0.69     | 0.66    | 906 |
+| weighted avg           | 0.76   | 0.73     | 0.70    | 906 |
+
 ## Useful Sources
 
 1. [Paper itself](https://arxiv.org/abs/2012.09164)
