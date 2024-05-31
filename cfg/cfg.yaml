@@ -1,0 +1,22 @@
+hydra:
+  output_subdir: null
+
+save_model_path: model_weights/model_weights.pt
+
+dataset:
+  root: ../data # for GCP - use "data/""
+  dataset: VOCSegmentation # for UNET, use VOCSegmentation dataset
+
+train:
+  epochs: 10
+  lr: 1e-5 # 0.001
+  weight_decay: 1e-8 # 5e-4
+  momentum: 0.999
+  loss_function: dice_loss
+  subset: None
+  multiclass: True
+  get_weights: False
+  num_classes: 1
+
+show_model_summary: True
+num_classes : 20
