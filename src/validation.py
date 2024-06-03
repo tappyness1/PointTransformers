@@ -96,7 +96,6 @@ def validation_segmentation(model, val_set, cfg, get_metrics = False):
     with tqdm(val_dataloader) as tepoch:
 
         for point_clouds, labels in tepoch:
-            
             with torch.no_grad():
                 out_pos, out = model(point_clouds.to(device))
             loss = loss_function(out.permute(0,2,1), labels.to(torch.long).to(device)) 
@@ -110,8 +109,8 @@ def validation_segmentation(model, val_set, cfg, get_metrics = False):
         # print (torch.cat(preds))
         preds = torch.cat(preds).cpu()
         gt = torch.cat(gt).cpu()
-        print (preds.shape)
-        print (gt.shape)
+        # print (preds.shape)
+        # print (gt.shape)
         cm = process_confusion_matrix(preds, gt, num_classes = cfg['train']['num_classes'])
         cm = pd.DataFrame(cm)
         print (f"Confusion Matrix: \n{cm}")

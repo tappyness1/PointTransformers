@@ -172,7 +172,7 @@ def get_final_results_segmentation(val_cfg = None, cfg = None):
         cfg = {"save_model_path": "model_weights/shapenet_airplane_model_weights",
                 'show_model_summary': True, 
                 'npoints': 2500,
-                'in_dim': 3,
+                'in_dim': 6,
                 'train': {"epochs": 10, 'lr': 0.05, 
                             'weight_decay': 1e-8, 'momentum':0.999, 
                             'save_checkpoint_interval': 5,
