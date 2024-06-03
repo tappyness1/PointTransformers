@@ -52,6 +52,19 @@ Classification Results:
 | macro avg              | 0.77   | 0.69     | 0.66    | 906 |
 | weighted avg           | 0.76   | 0.73     | 0.70    | 906 |
 
+Segmentation Results:
+
+| Classification Report: |           |        |          |         |
+|-----------------------:|----------:|-------:|----------|---------|
+|                        | precision | recall | f1-score | support |
+|                      0 |      0.85 |   0.96 | 0.90     | 432108  |
+|                      1 | 0.93      | 0.86   | 0.89     | 294364  |
+|                      2 | 0.95      | 0.71   | 0.81     | 122813  |
+|                      3 | 0.85      | 0.86   | 0.85     | 110715  |
+| accuracy               | 0.89      | 960000 | 0.67     | 86      |
+| macro avg              | 0.90      | 0.85   | 0.87     | 960000  |
+| weighted avg           | 0.89      | 0.89   | 0.88     | 960000  |
+
 ## Useful Sources
 
 1. [Paper itself](https://arxiv.org/abs/2012.09164)
