@@ -118,9 +118,10 @@ def validation_segmentation(model, val_set, cfg, get_metrics = False):
         cm.to_csv("val_results/segmentation_confusion_matrix.csv", header=False, index=False)
 
         cr = classification_report(gt, preds, labels = np.arange(0,cfg['train']['num_classes'],1), output_dict = True)
-        print (f"Classification Report: \n{cr}")
+        cr_print = classification_report(gt, preds, labels = np.arange(0,cfg['train']['num_classes'],1), output_dict = False)
+        print (f"Classification Report: \n{cr_print}")
         cr = pd.DataFrame(cr).transpose()
-        cr.to_csv("val_results/segmentation_classification_report.csv", header=False, index=True)
+        cr.to_csv("val_results/segmentation_classification_report.csv", header=False, index=False)
 
     print (f"Validation Loss: {sum(losses)/len(losses)}")
 

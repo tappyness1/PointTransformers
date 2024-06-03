@@ -126,7 +126,7 @@ class PointTransformerSegmentation(nn.Module):
 
         out = self.mlp(out_features)
 
-        return out
+        return points_xyz, out
     
 if __name__ == "__main__":
     import numpy as np
