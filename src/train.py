@@ -236,7 +236,7 @@ if __name__ == "__main__":
     cfg = {"save_model_path": "model_weights/shapenet_airplane_model_weights",
            'show_model_summary': True, 
            'npoints': 2500,
-           'in_dim': 3,
+           'in_dim': 6,
            'train': {"epochs": 10, 'lr': 0.05, 
                      'weight_decay': 1e-4, 'momentum':0.9, 
                      'save_checkpoint_interval': 5,

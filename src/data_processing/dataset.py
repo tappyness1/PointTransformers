@@ -39,7 +39,7 @@ class ModelNetDataset(Dataset):
         point_clouds = pc_normalize(point_clouds)
         class_id = self.classes[class_name]
 
-        return point_clouds[:, :3], class_id
+        return point_clouds, class_id
     
 class ShapeNetDataset(Dataset):
 
@@ -99,7 +99,7 @@ class ShapeNetDataset(Dataset):
 
         # TODO: control the dummy points by introducing mask
 
-        return point_clouds[:, :3], point_clouds[:, -1]
+        return point_clouds[:, :-1], point_clouds[:, -1]
     
         
 
