@@ -101,6 +101,57 @@ class TransitionDownBlock(nn.Module):
         out = torch.max(out, 3)[0] # B C H W -> B C H
         out = out.permute(0, 2, 1) # B C H -> B H C
         return sampled_points, out
+    
+class TransitionUpBlock(nn.Module):
+
+    def __init__(self, in_dim, out_dim):
+        super().__init__()
+        self.linear_1a = nn.Linear(in_dim, out_dim) 
+        self.linear_1b = nn.Linear(out_dim, out_dim)
+        self.bn = nn.BatchNorm1d(out_dim) # looks to be 3D data so need to use BN1D
+        self.relu = nn.ReLU()
+
+    def forward(self, points_xyz, points_features, skipped_xyz, skipped_features):
+        out = self.linear_1a(points_features)
+        out = self.bn(out.permute(0, 2, 1))
+        out = out.permute(0, 2, 1)
+        out = self.relu(out)
+
+        # trilinear interpolation
+        interpolate_xyz, interpolate_features = interpolate(skipped_xyz, skipped_features, points_xyz, out)
+
+        skipped = self.linear_1b(skipped_features)
+        skipped = self.bn(skipped.permute(0,2,1))
+        skipped = skipped.permute(0,2,1)
+        skipped = self.relu(skipped)
+
+        return interpolate_xyz, interpolate_features + skipped
+
+def interpolate(xyz1: torch.Tensor, features1:torch.Tensor, xyz2:torch.Tensor, features2:torch.Tensor, k = 3) -> torch.Tensor:
+    """Interpolate the features to the higher layer using inverse distance weighting
+
+    Args:
+        points1 (torch.Tensor): The l-1 layer output with d + C1 features. Not as many features, but more points
+        points2 (torch.Tensor): The l layer output with d+C2 features. More features, but less points
+        k (int, optional): k neighbours for interpolating the features. Defaults to 3.
+
+    Returns:
+        torch.Tensor: The interpolated features with the same number of points as points1, but with combined features of points1 and points2 (d + C1 + C2) 
+    """
+
+    distances = torch.cdist(xyz1, xyz2, p = 2) # B x N1 x N2
+    topk_results = torch.topk(distances, k = k, dim = 2, largest = False) # call .values or .indices
+    topk_weights = 1 / (topk_results.values + 1e-8) # add 1e-8 to prevent division by zero
+    top_k_norm_weights = topk_weights / topk_weights.sum(dim = 2, keepdim = True)
+
+    batch_indices = torch.arange(topk_results.indices.shape[0]).view(-1, 1).expand(-1, topk_results.indices.shape[1]*k).flatten()
+    feat = features2[batch_indices, topk_results.indices.flatten(), :]
+    feat = torch.mul(feat, top_k_norm_weights.flatten().unsqueeze(-1))
+    feat = feat.reshape(-1, k, features2.shape[2])
+    feat = feat.sum(dim=1)
+    interpolated_features = feat.view(features1.shape[0], features1.shape[1], features2.shape[2])
+  
+    return xyz1, interpolated_features
 
 if __name__ == "__main__":
 

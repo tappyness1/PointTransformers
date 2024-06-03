@@ -57,9 +57,11 @@ def train_classifier(train_set, val_set, cfg, num_classes = 40):
         loss = validation_classifier(network, val_set, cfg, get_metrics = False)
         scheduler.step(loss)
         network.train()
+        if epoch // cfg['train']['save_checkpoint_interval'] == 0:
+            torch.save(network.state_dict(), f"{cfg['save_model_path']}_{epoch}.pt")
         
     print("training done")
-    torch.save(network.state_dict(), cfg['save_model_path'])
+    torch.save(network.state_dict(), f"{cfg['save_model_path']}_final.pt")
 
     print("Validating dataset")
     validation_classifier(network, val_set, cfg, get_metrics = True)
@@ -77,7 +79,7 @@ def get_final_results_classifier(val_cfg = None, cfg = None):
         val_cfg = {"data_path": "../data/modelnet40_normal_resampled", "train": False, "modelnet_type": "modelnet10", "npoints": 1024}
 
     if not cfg:
-        cfg = {"save_model_path": "model_weights/model_weights.pt",
+        cfg = {"save_model_path": "model_weights/model_weights",
         'show_model_summary': True, 
         'npoints': 1024,
         'in_dim': 3, 
@@ -90,7 +92,7 @@ def get_final_results_classifier(val_cfg = None, cfg = None):
     
     val_set = ModelNetDataset(val_cfg)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    model_weights = torch.load(cfg['save_model_path'], map_location=torch.device(device))
+    model_weights = torch.load(f"{cfg['save_model_path']}_final.pt", map_location=torch.device(device))
     model = PointTransformerClassifier(npoints = cfg['npoints'], n_classes = cfg['train']['num_classes'], in_dim = cfg['in_dim'])
     model.load_state_dict(model_weights)
 
@@ -101,24 +103,25 @@ if __name__ == "__main__":
 
     torch.manual_seed(42)
 
-    # for local/VM runs
-    cfg = {"data_path": "../data/modelnet40_normal_resampled", "train": True, "modelnet_type": "modelnet10", "npoints": 1024}
-    train_set = ModelNetDataset(cfg)
-    cfg = {"data_path": "../data/modelnet40_normal_resampled", "train": False, "modelnet_type": "modelnet10", "npoints": 1024}
-    val_set = ModelNetDataset(cfg)
-
-    # # for Colab runs
-    # cfg = {"data_path": "/content/modelnet40_normal_resampled", "train": True, "modelnet_type": "modelnet10", "npoints": 1024}
+    # # for local/VM runs
+    # cfg = {"data_path": "../data/modelnet40_normal_resampled", "train": True, "modelnet_type": "modelnet10", "npoints": 1024}
     # train_set = ModelNetDataset(cfg)
-    # cfg = {"data_path": "/content/modelnet40_normal_resampled", "train": False, "modelnet_type": "modelnet10", "npoints": 1024}
+    # cfg = {"data_path": "../data/modelnet40_normal_resampled", "train": False, "modelnet_type": "modelnet10", "npoints": 1024}
     # val_set = ModelNetDataset(cfg)
 
-    cfg = {"save_model_path": "model_weights/model_weights.pt",
+    # for Colab runs
+    cfg = {"data_path": "/content/modelnet40_normal_resampled", "train": True, "modelnet_type": "modelnet10", "npoints": 1024}
+    train_set = ModelNetDataset(cfg)
+    cfg = {"data_path": "/content/modelnet40_normal_resampled", "train": False, "modelnet_type": "modelnet10", "npoints": 1024}
+    val_set = ModelNetDataset(cfg)
+
+    cfg = {"save_model_path": "model_weights/model_weights",
            'show_model_summary': True, 
            'npoints': 1024,
            'in_dim': 3, 
            'train': {"epochs": 10, 'lr': 1e-4, 
-                     'weight_decay': 1e-4, 'momentum':0.9, 
+                     'weight_decay': 1e-4, 'momentum':0.9,
+                     'save_checkpoint_interval': 5, 
                      'train_subset': 3990, # set 3990 for ModelNet10 else False if not intending to use subset. Set to 20 or something for small dataset experimentation/debugging
                      'val_subset': 906, # set 906 for ModelNet10, False otherwise
                      'num_classes': 10} # ModelNet40 so 40 classes, whereas ModelNet10 so 10 classes
