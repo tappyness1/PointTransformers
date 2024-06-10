@@ -87,7 +87,7 @@ class GroupVectorAttention(nn.Module):
         omega_out = self.softmax_1d(omega_out)
         b,c,h,w = omega_out.shape
         
-        # very awkward code here. TODO: cleaner
+        # very awkward code here. TODO: clean up
         weight_encoding = (omega_out.permute(0,2,3,1).unsqueeze(-1) * v_out.reshape(b,h,w,c,self.groups)).reshape(b,h,w,-1).permute(0,3,1,2)
         out = self.bn(weight_encoding)
         out = out.permute(0,2,3,1)
