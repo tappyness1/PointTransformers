@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader, Subset
 from tqdm import tqdm
 import numpy as np
 from src.model.PTv1.model import PointTransformerClassifier, PointTransformerSegmentation
+from src.model.PTv2.model import PTV2Classifier
 from src.data_processing.dataset import ModelNetDataset, ShapeNetDataset
 from src.metrics import process_confusion_matrix
 from src.validation import validation_classifier, validation_segmentation
@@ -41,9 +42,19 @@ class Trainer:
             subset_indices = torch.randperm(len(self.train_set))[:self.cfg['train']['train_subset']]
             self.train_set = Subset(self.train_set, subset_indices)
         
-        train_dataloader = DataLoader(self.train_set , batch_size=8, shuffle = True)
+        num_epochs = cfg['train']['epochs']
 
-        for epoch in range(cfg['train']['epochs']):
+        train_dataloader = DataLoader(self.train_set , batch_size=8, shuffle = True)
+        
+        if cfg['train']['continue_training']:
+            model_weights = torch.load(cfg['weights_path'], map_location=torch.device(device))
+            self.model.load_state_dict(model_weights)
+            
+            # get the saved epochs and continue training from there
+            last_epoch = int(cfg['weights_path'].split("_")[-1].split(".")[0])
+            num_epochs -= last_epoch
+
+        for epoch in range(num_epochs):
             print (f"Epoch {epoch + 1}:")
             # for i in tqdm(range(X.shape[0])):
             with tqdm(train_dataloader) as tepoch:
@@ -203,6 +214,14 @@ class PTClassifierTrainer(Trainer):
         self.cfg = cfg
         self.type = "Classifier"
 
+class PTV2ClassifierTrainer(Trainer):
+    def __init__(self, train_set, val_set, cfg):
+        self.model = PTV2Classifier(n_classes = cfg['train']['num_classes'], in_dim = cfg['in_dim'])
+        self.train_set = train_set
+        self.val_set = val_set
+        self.cfg = cfg
+        self.type = "Classifier"
+
 class PTSegmentationTrainer(Trainer):
     def __init__(self, train_set, val_set, cfg):
         self.model = PointTransformerSegmentation(npoints = cfg['npoints'], n_classes = cfg['train']['num_classes'], in_dim = cfg['in_dim'])
@@ -222,9 +241,9 @@ if __name__ == "__main__":
     # val_set = ModelNetDataset(cfg)
 
     # for Colab runs
-    cfg = {"data_path": "/content/modelnet40_normal_resampled", "train": True, "modelnet_type": "modelnet10", "npoints": 1024}
+    cfg = {"data_path": "/content/modelnet10_normal_resampled", "train": True, "modelnet_type": "modelnet10", "npoints": 1024}
     train_set = ModelNetDataset(cfg)
-    cfg = {"data_path": "/content/modelnet40_normal_resampled", "train": False, "modelnet_type": "modelnet10", "npoints": 1024}
+    cfg = {"data_path": "/content/modelnet10_normal_resampled", "train": False, "modelnet_type": "modelnet10", "npoints": 1024}
     val_set = ModelNetDataset(cfg)
 
     cfg = {"save_model_path": "model_weights/model_weights",
@@ -236,11 +255,15 @@ if __name__ == "__main__":
                      'save_checkpoint_interval': 5, 
                      'train_subset': 3990, # set 3990 for ModelNet10 else False if not intending to use subset. Set to 20 or something for small dataset experimentation/debugging
                      'val_subset': 906, # set 906 for ModelNet10, False otherwise
-                     'num_classes': 10} # ModelNet40 so 40 classes, whereas ModelNet10 so 10 classes
+                     'num_classes': 10, # ModelNet40 so 40 classes, whereas ModelNet10 so 10 classes
+                     'continue_training': False,
+                     'weights_path': "model_weights/model_weights_classifier_4.pt"} 
             }
 
-    classifier_trainer = PTClassifierTrainer(train_set = train_set, val_set = val_set, cfg = cfg)
-    PTClassifierTrainer().train_classifier()
+    # classifier_trainer = PTClassifierTrainer(train_set = train_set, val_set = val_set, cfg = cfg)
+    # PTClassifierTrainer().train_classifier()
+    classifier_trainer = PTV2ClassifierTrainer(train_set = train_set, val_set = val_set, cfg = cfg)
+    classifier_trainer.train_classifier()
 
     # # for Colab runs segmentations
     # cfg = {"data_path": "/content/shapenetcore_partanno_segmentation_benchmark_v0_normal", 
@@ -269,5 +292,5 @@ if __name__ == "__main__":
     #                  'num_classes': 4} # 4 due to only training on airplane
     #         }
 
-    segmentation_trainer = PTSegmentationTrainer(train_set = train_set, val_set = val_set, cfg = cfg)
-    PTClassifierTrainer().train_segmentation()
+    # segmentation_trainer = PTSegmentationTrainer(train_set = train_set, val_set = val_set, cfg = cfg)
+    # segmentation_trainer.train_segmentation()
