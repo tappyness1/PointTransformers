@@ -32,6 +32,7 @@ Make sure you change the directory of your data.
 ```
 python -m src.train
 ```
+PointTransformerV1
 
 Classification Results:
 
@@ -64,6 +65,27 @@ Segmentation Results:
 | accuracy               | 0.89      |        |          | 960000  |
 | macro avg              | 0.90      | 0.85   | 0.87     | 960000  |
 | weighted avg           | 0.89      | 0.89   | 0.88     | 960000  |
+
+PTV2 results:
+
+Classification Results:
+
+| Classification Report: |           |        |          |         |
+|-----------------------:|----------:|-------:|----------|---------|
+|                        | precision | recall | f1-score | support |
+|                      0 |      1.00 |   0.80 | 0.89     | 50      |
+|                      1 | 0.95      | 0.97   | 0.96     | 100     |
+|                      2 | 0.89      | 0.98   | 0.93     | 100     |
+|                      3 | 0.76      | 0.71   | 0.73     | 86      |
+|                      4 | 0.80      | 0.92   | 0.85     | 86      |
+|                      5 | 1.00      | 0.99   | 0.99     | 99      |
+|                      6 | 0.80      | 0.70   | 0.75     | 86      |
+|                      7 | 0.94      | 0.99   | 0.97     | 100     |
+|                      8 | 0.85      | 0.82   | 0.83     | 100     |
+|                      9 | 0.97      | 0.98   | 0.97     | 99      |
+|               accuracy | 0.90      |        |          | 906     |
+|              macro avg | 0.90      | 0.89   | 0.89     | 906     |
+|           weighted avg | 0.90      | 0.90   | 0.89     | 906     |
 
 ## Useful Sources
 

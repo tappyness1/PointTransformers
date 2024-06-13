@@ -89,8 +89,10 @@ class PointTransformerSegmentation(nn.Module):
 
 
     def forward(self, points):
+        
         points_xyz, points_features = points[:, :, :3], points
         out = self.linear(points_features)
+
         out_xyz, out_features = self.ptb_0(points_xyz, out)
         skipped_0_xyz, skipped_0_features = torch.clone(out_xyz), torch.clone(out_features)
 
