@@ -300,7 +300,7 @@ if __name__ == "__main__":
            'show_model_summary': True, 
            'npoints': 2500,
            'in_dim': 6,
-           'train': {"epochs": 10, 'lr': 0.05, 
+           'train': {"epochs": 20, 'lr': 0.05, 
                      'weight_decay': 1e-4, 'momentum':0.9, 
                      'save_checkpoint_interval': 5,
                      'train_subset': False, # set False if not intending to use subset. Set to 20 or something for small dataset experimentation/debugging

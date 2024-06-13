@@ -3,6 +3,8 @@
 ## What this is about
 Just a simple implementation based on the PointTransformer which was where people looked at PointNet and asked "can we parallelise the operations using Transformers?". Does pretty well but much of the same techniques in PointNet++ can be seen here. 
 
+Will cover PTv1 - v3. 
+
 ## What has been done 
 
 1. Set up the Architecture - See /src/model.py
@@ -10,10 +12,11 @@ Just a simple implementation based on the PointTransformer which was where peopl
 1. Set up the training - see /src/train.py
 1. Set up validation - Outputs classification reports
 1. Results visualisation - check out ./notebooks/segmentation_inference.ipynb
+1. All the above, but with Segmentation part. 
 
 ## What needs to be done
 
-1. All the above, but with Segmentation part. 
+1. PTV3 setup
 
 ## Dataset Used
 
@@ -32,7 +35,10 @@ Make sure you change the directory of your data.
 ```
 python -m src.train
 ```
-PointTransformerV1
+
+## Results from Training
+
+### PointTransformerV1
 
 Classification Results:
 
@@ -66,7 +72,7 @@ Segmentation Results:
 | macro avg              | 0.90      | 0.85   | 0.87     | 960000  |
 | weighted avg           | 0.89      | 0.89   | 0.88     | 960000  |
 
-PTV2 results:
+### PTV2 results:
 
 Classification Results:
 
@@ -86,6 +92,21 @@ Classification Results:
 |               accuracy | 0.90      |        |          | 906     |
 |              macro avg | 0.90      | 0.89   | 0.89     | 906     |
 |           weighted avg | 0.90      | 0.90   | 0.89     | 906     |
+
+Segmentation Results (20 Epochs):
+
+| Classification Report: |           |        |          |         |
+|-----------------------:|----------:|-------:|----------|---------|
+|                        | precision | recall | f1-score | support |
+|                      0 |      0.78 |   0.98 | 0.87     | 432074  |
+|                      1 | 0.97      | 0.81   | 0.88     | 294411  |
+|                      2 | 0.99      | 0.33   | 0.50     | 122817  |
+|                      3 | 0.77      | 0.92   | 0.84     | 110698  |
+|               accuracy | 0.84      |        |          | 960000  |
+|              macro avg | 0.88      | 0.76   | 0.77     | 960000  |
+|           weighted avg | 0.86      | 0.84   | 0.82     | 960000  |
+
+
 
 ## Useful Sources
 

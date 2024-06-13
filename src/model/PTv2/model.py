@@ -57,7 +57,7 @@ class PTV2Segmentation(nn.Module):
         self.ptb_0 = PointTransformerV2Block(in_dim = 48, out_dim = 48)
 
         self.tdb_1 = TransitionDownBlock(in_dim = 48, out_dim = 96, grid_size = [0.06] * 3)
-        self.ptb_1 = PointTransformerV2Block(in_dim = 96, out_dim = 96, K = 4)
+        self.ptb_1 = PointTransformerV2Block(in_dim = 96, out_dim = 96, K = 16)
 
         self.tdb_2 = TransitionDownBlock(in_dim = 96, out_dim = 192, grid_size = [0.13] * 3)
         self.ptb_2 = PointTransformerV2Block(in_dim = 192, out_dim = 192, K = 2)
@@ -73,7 +73,7 @@ class PTV2Segmentation(nn.Module):
         self.ptb_5 = PointTransformerV2Block(in_dim = 512, out_dim = 512, K = 1)
 
         self.tub_6 = TransitionUpBlock(in_dim = 512, out_dim = 384)
-        self.ptb_6 = PointTransformerV2Block(in_dim = 384, out_dim = 384, K = 1)
+        self.ptb_6 = PointTransformerV2Block(in_dim = 384, out_dim = 384, K = 2)
 
         self.tub_7 = TransitionUpBlock(in_dim = 384, out_dim = 192)
         self.ptb_7 = PointTransformerV2Block(in_dim = 192, out_dim = 192, K = 2)
@@ -82,7 +82,7 @@ class PTV2Segmentation(nn.Module):
         self.ptb_8 = PointTransformerV2Block(in_dim = 96, out_dim = 96, K = 4)
 
         self.tub_9 = TransitionUpBlock(in_dim = 96, out_dim = 48)
-        self.ptb_9 = PointTransformerV2Block(in_dim = 48, out_dim = 48, K = 8)
+        self.ptb_9 = PointTransformerV2Block(in_dim = 48, out_dim = 48, K = 16)
 
         self.mlp = nn.Linear(48, n_classes)
 
