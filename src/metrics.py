@@ -2,18 +2,18 @@ import torch
 import numpy as np
 from sklearn.metrics import confusion_matrix
 
-def process_confusion_matrix(out: torch.Tensor, gt: torch.Tensor, num_classes):
+def process_confusion_matrix(gt: torch.Tensor, preds: torch.Tensor, num_classes):
     """
     This function computes the confusion matrix for a given output and ground truth.
     
     Args:
-    out: torch.Tensor: The output of the model
     gt: torch.Tensor: The ground truth
+    preds: torch.Tensor: The output of the model
     
     Returns:
     torch.Tensor: The confusion matrix
     """
-    return confusion_matrix(out, gt, labels= np.arange(0,num_classes,1))
+    return confusion_matrix(gt, preds, labels= np.arange(0,num_classes,1))
 
 
 if __name__ == "__main__":
